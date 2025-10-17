@@ -1,51 +1,58 @@
 class RecipesController < ApplicationController
-  before_action :set_recipe, only: %i[ show update destroy ]
 
   # GET /recipes
   def index
-    @recipes = Recipe.all
+    recipes = Recipes::RecipeService.new.all
 
-    render json: @recipes
+    render json: Recipes::RecipeSerializer.serialize_collection(recipes)
   end
 
   # GET /recipes/1
   def show
-    render json: @recipe
+    recipe = Recipes::RecipeService.new.find(params[:id])
+
+    render json: Recipes::RecipeSerializer.new(recipe).as_json
   end
 
   # POST /recipes
   def create
-    @recipe = Recipe.new(recipe_params)
+    recipe = Recipes::RecipeService.new.create(recipe_params)
 
-    if @recipe.save
-      render json: @recipe, status: :created, location: @recipe
+    if recipe.save
+      render json: recipe, status: :created, location: recipe
     else
-      render json: @recipe.errors, status: :unprocessable_content
+      render json: recipe.errors, status: :unprocessable_content
     end
   end
 
   # PATCH/PUT /recipes/1
   def update
-    if @recipe.update(recipe_params)
-      render json: @recipe
+    recipe = Recipes::RecipeService.new.update(params[:id], recipe_params)
+
+    if recipe
+      render json: Recipes::RecipeSerializer.new(recipe).as_json
     else
-      render json: @recipe.errors, status: :unprocessable_content
+      render json: recipe.errors, status: :unprocessable_content
     end
   end
 
   # DELETE /recipes/1
   def destroy
-    @recipe.destroy!
+    recipe = Recipes::RecipeService.new.destroy(params[:id])
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_recipe
-      @recipe = Recipe.find(params.expect(:id))
-    end
 
     # Only allow a list of trusted parameters through.
     def recipe_params
-      params.expect(recipe: [ :title ])
+      rp = params.require(:recipe).permit( 
+        :name, :description, :prep_time, :servings, 
+        steps: [], 
+        ingredients: [:product_id, :amount, :unit] 
+      )
+
+      rp[:recipe_products_attributes] = rp.delete(:ingredients) if rp[:ingredients]
+
+      rp
     end
 end
