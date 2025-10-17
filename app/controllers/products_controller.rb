@@ -1,51 +1,50 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: %i[ show update destroy ]
 
   # GET /products
   def index
-    @products = Product.all
+    products = Products::ProductService.new.all
 
-    render json: @products
+    render json: Products::ProductSerializer.serialize_collection(products)
   end
 
   # GET /products/1
   def show
-    render json: @product
+    product = Products::ProductService.new.find(params[:id])
+
+    render json: Products::ProductSerializer.new(product).as_json
   end
 
   # POST /products
   def create
-    @product = Product.new(product_params)
+    product = Products::ProductService.new.create(product_params)
 
-    if @product.save
-      render json: @product, status: :created, location: @product
+    if product.save
+      render json: product, status: :created, location: product
     else
-      render json: @product.errors, status: :unprocessable_content
+      render json: product.errors, status: :unprocessable_content
     end
   end
 
   # PATCH/PUT /products/1
   def update
-    if @product.update(product_params)
-      render json: @product
+     product = Products::ProductService.new.update(params[:id], product_params)
+
+    if product
+      render json: Products::ProductSerializer.new(product).as_json
     else
-      render json: @product.errors, status: :unprocessable_content
+      render json: product.errors, status: :unprocessable_content
     end
   end
 
   # DELETE /products/1
   def destroy
-    @product.destroy!
+    product = Products::ProductService.new.destroy(params[:id])
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_product
-      @product = Product.find(params.expect(:id))
-    end
 
+  private
     # Only allow a list of trusted parameters through.
     def product_params
-      params.expect(product: [ :name, :category ])
+      params.require(:product).permit(:name)
     end
 end
