@@ -8,6 +8,7 @@ module Products
       {
         id: @product.id,
         name: @product.name,
+        unit: @product.unit
       }
     end
 
