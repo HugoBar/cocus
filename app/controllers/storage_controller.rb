@@ -2,7 +2,7 @@ class StorageController < ApplicationController
   before_action :product_exists?, only: :create
   before_action :validate_unit, only: [:create]
 
-  ALLOWED_UNITS = %w[kg g l ml tablespoon teaspoon cup pcs].freeze
+  ALLOWED_UNITS = %w[kg g l ml tablespoon teaspoon cup count].freeze
 
   # GET /storage
   def index

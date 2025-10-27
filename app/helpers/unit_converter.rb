@@ -6,7 +6,7 @@ class UnitConverter
       # Convert volume units to weight base
       volume_ml = Unitwise(value, unit).convert_to("mL").value
       volume_ml * product.density
-    elsif unit == "pcs"
+    elsif unit == "count"
       value
     else
       # Regular unit conversion
