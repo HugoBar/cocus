@@ -55,7 +55,7 @@ class RecipesController < ApplicationController
       rp = params.require(:recipe).permit( 
         :name, :description, :prep_time, :servings, 
         steps: [], 
-        ingredients: [:product_id, :amount, :unit] 
+        ingredients: [:product_id, :quantity, :unit] 
       )
 
       rp[:recipe_products_attributes] = rp.delete(:ingredients) if rp[:ingredients]

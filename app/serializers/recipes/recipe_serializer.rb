@@ -32,7 +32,7 @@ module Recipes
       ingredients.map do |ingredient|
         {
           name: ingredient.product.name,
-          amount: ingredient.amount,
+          quantity: ingredient.quantity,
           unit: ingredient.unit
         }
       end

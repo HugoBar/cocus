@@ -14,13 +14,13 @@ module Recipes
         stored_product = ::Storage.find_by(product_id: recipe_product.product_id)
         next false unless stored_product
 
-        required_amount = UnitConverter.to_base(
-          recipe_product.amount,
+        required_quantity = UnitConverter.to_base(
+          recipe_product.quantity,
           recipe_product.unit,
           stored_product.product
         )
 
-        stored_product.quantity >= required_amount
+        stored_product.quantity >= required_quantity
       end
     end
   end
