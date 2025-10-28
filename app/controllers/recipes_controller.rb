@@ -41,6 +41,13 @@ class RecipesController < ApplicationController
     recipe = Recipes::RecipeService.new.destroy(params[:id])
   end
 
+  # GET /recipes/available_recipes
+  def available_recipes
+    recipes = Recipes::RecipeTrackerService.new.available_recipes
+
+    render json: Recipes::RecipeSerializer.serialize_collection(recipes)
+  end
+
   private
 
     # Only allow a list of trusted parameters through.
