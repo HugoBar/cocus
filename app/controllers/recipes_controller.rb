@@ -1,4 +1,5 @@
 class RecipesController < ApplicationController
+  before_action :recipe_exists?, only: :complete_recipe
 
   # GET /recipes
   def index
@@ -48,18 +49,41 @@ class RecipesController < ApplicationController
     render json: Recipes::RecipeSerializer.serialize_collection(recipes)
   end
 
+  def complete_recipe
+    recipe = Recipes::RecipeTrackerService.new.complete_recipe(complete_recipe_params)
+
+    render json: Recipes::RecipeTrackerSerializer.new(recipe).as_json
+  rescue Unitwise::ConversionError => e
+    render json: { error: e.message }, status: :bad_request
+  end
+
   private
 
-    # Only allow a list of trusted parameters through.
-    def recipe_params
-      rp = params.require(:recipe).permit( 
-        :name, :description, :prep_time, :servings, 
-        steps: [], 
-        ingredients: [:product_id, :quantity, :unit] 
-      )
-
-      rp[:recipe_products_attributes] = rp.delete(:ingredients) if rp[:ingredients]
-
-      rp
+  def recipe_exists?
+    recipe = Recipe.find_by(id: params[:recipe][:id])
+    
+    unless recipe
+      render json: { error: "Recipe not found" }, status: :not_found
     end
+  end
+
+  # Only allow a list of trusted parameters through.
+  def recipe_params
+    rp = params.require(:recipe).permit( 
+      :name, :description, :prep_time, :servings, 
+      steps: [], 
+      ingredients: [:product_id, :quantity, :unit] 
+    )
+
+    rp[:recipe_products_attributes] = rp.delete(:ingredients) if rp[:ingredients]
+
+    rp
+  end
+
+  def complete_recipe_params
+    params.require(:recipe).permit( 
+      :id,
+      ingredients: [:product_id, :quantity, :unit] 
+    )
+  end
 end

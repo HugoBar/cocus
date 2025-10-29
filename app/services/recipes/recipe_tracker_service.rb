@@ -7,6 +7,11 @@ module Recipes
         .select { |recipe| can_be_made?(recipe) }
     end
 
+    def complete_recipe(recipe)
+      #TODO: Create completed recipes log table
+      Storages::StorageService.new.remove_batch(recipe[:ingredients])
+    end
+
     private
 
     def can_be_made?(recipe)

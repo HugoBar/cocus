@@ -14,5 +14,27 @@ module Storages
       storage.update(quantity: updated_quantity, unit: storage.product.unit)
       storage
     end
+
+    def remove_from_storage(product)
+      storage = ::Storage.find_by(product_id: product[:product_id])
+      
+      removed_quantity = UnitConverter.to_base(product[:quantity], product[:unit], storage.product)
+      updated_quantity = [storage[:quantity] - removed_quantity, 0].max
+
+      storage.update(quantity: updated_quantity, unit: storage.product.unit)
+      storage
+    end
+
+    def remove_batch(products)
+      updated_storage = []
+
+      ActiveRecord::Base.transaction do
+        products.each do |p|
+          updated_storage  << remove_from_storage(p)
+        end
+      end
+
+      updated_storage
+    end
   end
 end
