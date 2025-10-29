@@ -16,16 +16,16 @@ module Recipes
 
     def can_be_made?(recipe)
       recipe.recipe_products.all? do |recipe_product|
-        stored_product = ::Storage.find_by(product_id: recipe_product.product_id)
-        next false unless stored_product
+        product_in_storage = ::Storage.find_by(product_id: recipe_product.product_id)
+        next false unless product_in_storage
 
         required_quantity = UnitConverter.to_base(
           recipe_product.quantity,
           recipe_product.unit,
-          stored_product.product
+          product_in_storage.product
         )
 
-        stored_product.quantity >= required_quantity
+        product_in_storage.quantity >= required_quantity
       end
     end
   end

@@ -21,6 +21,7 @@ class StorageController < ApplicationController
   end
 
   private
+  
   def product_exists?
     product = Product.find_by(id: params[:product_id])
     unless product
