@@ -50,9 +50,9 @@ class RecipesController < ApplicationController
   end
 
   def complete_recipe
-    recipe = Recipes::RecipeTrackerService.new.complete_recipe(complete_recipe_params)
+    completion = Recipes::RecipeTrackerService.new.complete_recipe(complete_recipe_params)
 
-    render json: Recipes::RecipeTrackerSerializer.new(recipe).as_json
+    render json: Recipes::RecipeTrackerSerializer.new(completion).as_json
   rescue Unitwise::ConversionError => e
     render json: { error: e.message }, status: :bad_request
   end

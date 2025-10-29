@@ -8,8 +8,14 @@ module Recipes
     end
 
     def complete_recipe(recipe)
-      #TODO: Create completed recipes log table
-      Storages::StorageService.new.remove_batch(recipe[:ingredients])
+      storage = Storages::StorageService.new.remove_batch(recipe[:ingredients])
+
+      log = RecipeLogs.create!(recipe_id: recipe[:id], ingredients: recipe[:ingredients])
+
+      {storage: storage, recipe_id: log.recipe_id}
+    rescue StandardError => e
+      Rails.logger.error("Failed to complete recipe #{recipe[:id]}: #{e.message}")
+      { error: e.message }
     end
 
     private

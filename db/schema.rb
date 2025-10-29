@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_28_170226) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_29_152642) do
   create_table "products", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -18,6 +18,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_28_170226) do
     t.string "unit"
     t.float "density"
     t.index ["name"], name: "index_products_on_name", unique: true
+  end
+
+  create_table "recipe_logs", force: :cascade do |t|
+    t.integer "recipe_id", null: false
+    t.datetime "completed_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.json "ingredients", default: [], null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "recipe_products", force: :cascade do |t|

@@ -1,11 +1,14 @@
 module Recipes
   class RecipeTrackerSerializer
-    def initialize(products)
-      @products = products
+    def initialize(completion)
+      @products = completion[:storage]
+      @recipe_id = completion[:recipe_id]
     end
 
     def as_json
       {
+        completed: true,
+        recipe_id: @recipe_id,
         product_in_storage: serialize_products(@products)
       }
     end
