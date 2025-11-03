@@ -44,15 +44,15 @@ class RecipesController < ApplicationController
 
   # GET /recipes/available_recipes
   def available_recipes
-    recipes = Recipes::RecipeTrackerService.new.available_recipes
+    recipes = Recipes::RecipeTrackerService.new.available_recipes(include_unavailable: include_unavailable)
 
-    render json: Recipes::RecipeSerializer.serialize_collection(recipes)
+    render json: Recipes::AvailableRecipeSerializer.serialize_collection(recipes)
   end
 
   def complete_recipe
     completion = Recipes::RecipeTrackerService.new.complete_recipe(complete_recipe_params)
 
-    render json: Recipes::RecipeTrackerSerializer.new(completion).as_json
+    render json: Recipes::CompleteRecipeSerializer.new(completion).as_json
   rescue Unitwise::ConversionError => e
     render json: { error: e.message }, status: :bad_request
   end
@@ -85,5 +85,9 @@ class RecipesController < ApplicationController
       :id,
       ingredients: [:product_id, :quantity, :unit] 
     )
+  end
+
+  def include_unavailable
+    params[:include_unavailable].to_s.downcase == "true"
   end
 end
