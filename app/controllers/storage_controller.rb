@@ -6,9 +6,16 @@ class StorageController < ApplicationController
 
   # GET /storage
   def index
-    storage = Storages::StorageService.new.all
+    storages = Storages::StorageService.new.all
 
-    render json: storage
+    render json: Storages::StorageSerializer.serialize_collection(storages)
+  end
+
+  # GET /storage/1
+  def show
+    recipe = Storages::StorageService.new.find(params[:id])
+
+    render json: Storages::StorageSerializer.new(recipe).as_json
   end
 
   # POST /storage

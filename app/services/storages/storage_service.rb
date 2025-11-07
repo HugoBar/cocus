@@ -1,7 +1,11 @@
 module Storages
   class StorageService
     def all
-      ::Storage.includes(:product).all
+      Storage.includes(:product).all
+    end
+
+    def find(id)
+      Storage.includes(:product).find(id)
     end
 
     def add_product_to_storage(product)
