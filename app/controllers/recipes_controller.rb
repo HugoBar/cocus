@@ -19,22 +19,14 @@ class RecipesController < ApplicationController
   def create
     recipe = Recipes::RecipeService.new.create(recipe_params)
 
-    if recipe.save
-      render json: recipe, status: :created, location: recipe
-    else
-      render json: recipe.errors, status: :unprocessable_content
-    end
+    render json: recipe, status: :created, location: recipe
   end
 
   # PATCH/PUT /recipes/1
   def update
     recipe = Recipes::RecipeService.new.update(params[:id], recipe_params)
 
-    if recipe
-      render json: Recipes::RecipeSerializer.new(recipe).as_json
-    else
-      render json: recipe.errors, status: :unprocessable_content
-    end
+    render json: Recipes::RecipeSerializer.new(recipe).as_json
   end
 
   # DELETE /recipes/1
@@ -49,6 +41,7 @@ class RecipesController < ApplicationController
     render json: Recipes::AvailableRecipeSerializer.serialize_collection(recipes)
   end
 
+  # POST /recipes/complete_recipe
   def complete_recipe
     completion = Recipes::RecipeTrackerService.new.complete_recipe(complete_recipe_params)
 

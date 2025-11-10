@@ -1,6 +1,6 @@
 class StorageController < ApplicationController
-  before_action :product_exists?, only: :create
-  before_action :validate_unit, only: [:create]
+  before_action :product_exists?, only: :add_product_to_storage
+  before_action :validate_unit, only: [:add_product_to_storage]
 
   ALLOWED_UNITS = %w[kg g l ml tablespoon teaspoon cup count].freeze
 
@@ -19,7 +19,7 @@ class StorageController < ApplicationController
   end
 
   # POST /storage
-  def create
+  def add_product_to_storage
     storage = Storages::StorageService.new.add_product_to_storage(storage_params)
 
     render json: storage, status: :created, location: storage

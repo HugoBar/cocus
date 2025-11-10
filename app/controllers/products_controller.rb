@@ -18,22 +18,14 @@ class ProductsController < ApplicationController
   def create
     product = Products::ProductService.new.create(product_params)
 
-    if product.save
-      render json: product, status: :created, location: product
-    else
-      render json: product.errors, status: :unprocessable_content
-    end
+    render json: product, status: :created, location: product
   end
 
   # PATCH/PUT /products/1
   def update
      product = Products::ProductService.new.update(params[:id], product_params)
 
-    if product
-      render json: Products::ProductSerializer.new(product).as_json
-    else
-      render json: product.errors, status: :unprocessable_content
-    end
+    render json: Products::ProductSerializer.new(product).as_json
   end
 
   # DELETE /products/1
