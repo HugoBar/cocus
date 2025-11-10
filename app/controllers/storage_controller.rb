@@ -1,8 +1,7 @@
 class StorageController < ApplicationController
+  before_action :set_storage_params, only: :add_product_to_storage
   before_action :product_exists?, only: :add_product_to_storage
-  before_action :validate_unit, only: [:add_product_to_storage]
-
-  ALLOWED_UNITS = %w[kg g l ml tablespoon teaspoon cup count].freeze
+  before_action :validate_measure_unit, only: [:add_product_to_storage]
 
   # GET /storage
   def index
@@ -20,31 +19,26 @@ class StorageController < ApplicationController
 
   # POST /storage
   def add_product_to_storage
-    storage = Storages::StorageService.new.add_product_to_storage(storage_params)
+    storage = Storages::StorageService.new.add_product_to_storage(@storage_params)
 
     render json: storage, status: :created, location: storage
-  rescue Unitwise::ConversionError => e
-    render json: { error: e.message }, status: :bad_request
   end
 
   private
   
+  def set_storage_params
+    @storage_params = storage_params_with_validation
+  end
+
   def product_exists?
-    product = Product.find_by(id: params[:product_id])
-    unless product
-      render json: { error: "Product not found" }, status: :not_found
-    end
+    product = Product.find(@storage_params[:product_id])
   end
 
-  # Only allow a list of trusted parameters through.
-  def storage_params
-    params.expect(storage: [ :product_id, :quantity, :unit ])
-  end
+  def validate_measure_unit
+    unit = @storage_params[:unit]
 
-  def validate_unit
-    unit = params.dig(:storage, :unit)
     unless ALLOWED_UNITS.include?(unit)
-      render json: { error: "Invalid unit. Allowed units are: #{ALLOWED_UNITS.join(', ')}" }, status: :unprocessable_entity
+      raise InvalidMeasureUnitError
     end
   end
 end

@@ -1,9 +1,17 @@
 class ApplicationController < ActionController::API
-  rescue_from ActiveRecord::RecordInvalid,       with: :handle_record_invalid
-  rescue_from ActiveRecord::RecordNotUnique,     with: :handle_record_not_unique
-  rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
-  rescue_from ActiveRecord::RecordNotFound,      with: :handle_record_not_found
-  rescue_from StandardError,                     with: :handle_internal_error unless Rails.env.development?
+  include ParamValidations
+
+  class InvalidMeasureUnitError < StandardError; end
+
+  rescue_from ActiveRecord::RecordInvalid,          with: :handle_record_invalid
+  rescue_from ActiveRecord::RecordNotUnique,        with: :handle_record_not_unique
+  rescue_from ActionController::ParameterMissing,   with: :handle_parameter_missing
+  rescue_from ActiveRecord::RecordNotFound,         with: :handle_record_not_found
+  rescue_from InvalidMeasureUnitError,              with: :handle_measure_unit_invalid
+  rescue_from Unitwise::ConversionError,             with: :handle_conversion_error
+  rescue_from StandardError,                        with: :handle_internal_error unless Rails.env.development?
+
+  ALLOWED_UNITS = %w[kg g l ml tablespoon teaspoon cup count].freeze
 
   private
 
@@ -43,5 +51,19 @@ class ApplicationController < ActionController::API
       error: "Internal server error",
       details: exception.message
     }, status: :internal_server_error
+  end
+
+  def handle_measure_unit_invalid(exception)
+    render json: {
+      error: "Invalid measure unit",
+      details: "Allowed units are: #{ALLOWED_UNITS.join(', ')}"
+    }, status: :unprocessable_entity
+  end
+
+  def handle_conversion_error(exception)
+    render json: {
+      error: "Invalid measure unit conversion",
+      details: exception.message
+    }, status: :bad_request
   end
 end
