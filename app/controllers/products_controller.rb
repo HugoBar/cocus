@@ -1,4 +1,6 @@
 class ProductsController < ApplicationController
+  before_action :set_product_params, only: [:create]
+  before_action :validate_measure_unit, only: [:create]
 
   # GET /products
   def index
@@ -16,7 +18,7 @@ class ProductsController < ApplicationController
 
   # POST /products
   def create
-    product = Products::ProductService.new.create(product_params)
+    product = Products::ProductService.new.create(@product_params)
 
     render json: product, status: :created, location: product
   end
@@ -35,6 +37,15 @@ class ProductsController < ApplicationController
 
 
   private
+
+  def set_product_params
+    @product_params = product_params_with_validation
+  end
+
+  def validate_measure_unit
+    ensure_measure_unit!(@product_params)
+  end
+
     # Only allow a list of trusted parameters through.
     def product_params
       params.require(:product).permit(:name, :unit)
