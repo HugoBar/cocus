@@ -1,8 +1,6 @@
 class ApplicationController < ActionController::API
   include ParamValidations
 
-  class InvalidMeasureUnitError < StandardError; end
-
   rescue_from ActiveRecord::RecordInvalid,          with: :handle_record_invalid
   rescue_from ActiveRecord::RecordNotUnique,        with: :handle_record_not_unique
   rescue_from ActionController::ParameterMissing,   with: :handle_parameter_missing
@@ -10,8 +8,6 @@ class ApplicationController < ActionController::API
   rescue_from InvalidMeasureUnitError,              with: :handle_measure_unit_invalid
   rescue_from Unitwise::ConversionError,             with: :handle_conversion_error
   rescue_from StandardError,                        with: :handle_internal_error unless Rails.env.development?
-
-  ALLOWED_UNITS = %w[kg g l ml tablespoon teaspoon cup count].freeze
 
   private
 
