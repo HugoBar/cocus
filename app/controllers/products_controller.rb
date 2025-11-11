@@ -1,6 +1,6 @@
 class ProductsController < ApplicationController
   before_action :set_product_params, only: [:create]
-  before_action :validate_measure_unit, only: [:create]
+  before_action :validate_measure_unit, only: [:create, :update]
 
   # GET /products
   def index
@@ -46,8 +46,7 @@ class ProductsController < ApplicationController
     ensure_measure_unit!(@product_params)
   end
 
-    # Only allow a list of trusted parameters through.
-    def product_params
-      params.require(:product).permit(:name, :unit)
-    end
+  def product_params
+    params.require(:product).permit(:name, :unit)
+  end
 end
