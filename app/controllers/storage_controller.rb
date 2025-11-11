@@ -35,10 +35,6 @@ class StorageController < ApplicationController
   end
 
   def validate_measure_unit
-    unit = @storage_params[:unit]
-
-    unless ALLOWED_UNITS.include?(unit)
-      raise InvalidMeasureUnitError
-    end
+    ensure_measure_unit!(@storage_params)
   end
 end
