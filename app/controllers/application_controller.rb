@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
   rescue_from ActionController::ParameterMissing,   with: :handle_parameter_missing
   rescue_from ActiveRecord::RecordNotFound,         with: :handle_record_not_found
   rescue_from InvalidMeasureUnitError,              with: :handle_measure_unit_invalid
-  rescue_from Unitwise::ConversionError,             with: :handle_conversion_error
+  rescue_from Unitwise::ConversionError,            with: :handle_conversion_error
   rescue_from StandardError,                        with: :handle_internal_error unless Rails.env.development?
 
   private

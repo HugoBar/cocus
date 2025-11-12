@@ -1,7 +1,6 @@
 class RecipesController < ApplicationController
-  before_action :recipe_exists?, only: :complete_recipe
-  before_action :set_recipe_params, only: [:create]
-  before_action :validate_measure_unit, only: [:create]
+  before_action :set_recipe_params, only: :create
+  before_action :set_complete_recipe_params, only: :complete_recipe
 
   # GET /recipes
   def index
@@ -43,39 +42,23 @@ class RecipesController < ApplicationController
     render json: Recipes::AvailableRecipeSerializer.serialize_collection(recipes)
   end
 
-  # POST /recipes/complete_recipe
+  # POST /recipes/1/complete
   def complete_recipe
-    completion = Recipes::RecipeTrackerService.new.complete_recipe(complete_recipe_params)
+    completion = Recipes::RecipeTrackerService.new.complete_recipe(params[:id], @complete_recipe_params)
 
     render json: Recipes::CompleteRecipeSerializer.new(completion).as_json
-  rescue Unitwise::ConversionError => e
-    render json: { error: e.message }, status: :bad_request
   end
 
   private
 
-  def recipe_exists?
-    recipe = Recipe.find_by(id: params[:recipe][:id])
-    
-    unless recipe
-      render json: { error: "Recipe not found" }, status: :not_found
-    end
-  end
-
-  # Only allow a list of trusted parameters through.
   def set_recipe_params
     @recipe_params = recipe_params_with_validations
-  end
-
-  def validate_measure_unit
     ensure_measure_unit!(@recipe_params)
   end
-
-  def complete_recipe_params
-    params.require(:recipe).permit( 
-      :id,
-      ingredients: [:product_id, :quantity, :unit] 
-    )
+  
+  def set_complete_recipe_params
+    @complete_recipe_params = complete_recipe_params_with_validations
+    ensure_measure_unit!(@complete_recipe_params)
   end
 
   def include_unavailable

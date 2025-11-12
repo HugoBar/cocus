@@ -41,6 +41,20 @@ module ParamValidations
     recipe
   end
 
+  def complete_recipe_params_with_validations
+    recipe = params.require(:recipe).permit( 
+      ingredients: [:product_id, :quantity, :unit] 
+    )
+
+    required_fields = %i[ingredients]
+    ensure_required_fields!(recipe, required_fields)
+
+    recipe[:recipe_products_attributes] = recipe.delete(:ingredients)
+
+    recipe
+  end
+
+  # TODO: apply to nested attributes
   def ensure_required_fields!(params, required_fields)
     missing = required_fields.select { |field| params[field].blank? }
 

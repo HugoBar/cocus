@@ -19,15 +19,14 @@ module Recipes
       end
     end
 
-    def complete_recipe(recipe)
-      storage = Storages::StorageService.new.remove_batch(recipe[:ingredients])
+    def complete_recipe(id, recipe)
+      storage = Storages::StorageService.new.remove_batch(recipe[:recipe_products_attributes])
 
-      log = RecipeLogs.create!(recipe_id: recipe[:id], ingredients: recipe[:ingredients])
-
+      log = RecipeLogs.create!(recipe_id: id, ingredients: recipe[:recipe_products_attributes])
+      
       {storage: storage, recipe_id: log.recipe_id}
-    rescue StandardError => e
-      Rails.logger.error("Failed to complete recipe #{recipe[:id]}: #{e.message}")
-      { error: e.message }
+    rescue Unitwise::ConversionError => e
+      raise ConversionError, e.message
     end
 
     private

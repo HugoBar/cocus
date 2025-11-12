@@ -2,9 +2,12 @@ Rails.application.routes.draw do
   resources :products
 
   resources :recipes do
+    member do
+      post :complete, to: 'recipes#complete_recipe'
+    end
+
     collection do
       get :available_recipes
-      post :complete_recipe
     end
   end
 
