@@ -1,5 +1,7 @@
 class RecipesController < ApplicationController
   before_action :recipe_exists?, only: :complete_recipe
+  before_action :set_recipe_params, only: [:create]
+  before_action :validate_measure_unit, only: [:create]
 
   # GET /recipes
   def index
@@ -17,7 +19,7 @@ class RecipesController < ApplicationController
 
   # POST /recipes
   def create
-    recipe = Recipes::RecipeService.new.create(recipe_params)
+    recipe = Recipes::RecipeService.new.create(@recipe_params)
 
     render json: recipe, status: :created, location: recipe
   end
@@ -61,16 +63,12 @@ class RecipesController < ApplicationController
   end
 
   # Only allow a list of trusted parameters through.
-  def recipe_params
-    rp = params.require(:recipe).permit( 
-      :name, :description, :prep_time, :servings, 
-      steps: [], 
-      ingredients: [:product_id, :quantity, :unit] 
-    )
+  def set_recipe_params
+    @recipe_params = recipe_params_with_validations
+  end
 
-    rp[:recipe_products_attributes] = rp.delete(:ingredients) if rp[:ingredients]
-
-    rp
+  def validate_measure_unit
+    ensure_measure_unit!(@recipe_params)
   end
 
   def complete_recipe_params

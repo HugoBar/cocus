@@ -26,6 +26,21 @@ module ParamValidations
     product
   end
 
+  def recipe_params_with_validations
+    recipe = params.require(:recipe).permit( 
+      :name, :description, :prep_time, :servings, 
+      steps: [], 
+      ingredients: [:product_id, :quantity, :unit] 
+    )
+
+    required_fields = %i[name description prep_time servings steps ingredients]
+    ensure_required_fields!(recipe, required_fields)
+
+    recipe[:recipe_products_attributes] = recipe.delete(:ingredients)
+
+    recipe
+  end
+
   def ensure_required_fields!(params, required_fields)
     missing = required_fields.select { |field| params[field].blank? }
 
@@ -35,8 +50,12 @@ module ParamValidations
   end
 
   def ensure_measure_unit!(params)
-    unit = params[:unit]
+    units = if params[:unit] 
+              [params[:unit]]
+            else
+              params[:recipe_products_attributes]&.map { |p| p[:unit] } || []
+            end
 
-    raise InvalidMeasureUnitError unless ALLOWED_UNITS.include?(unit)
+    raise InvalidMeasureUnitError unless units.all? { |unit| ALLOWED_UNITS.include?(unit) }
   end
 end
