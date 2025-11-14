@@ -1,6 +1,6 @@
 class ProductsController < ApplicationController
-  before_action :set_product_params, only: [:create]
-  before_action :validate_measure_unit, only: [:create, :update]
+  before_action :set_product_params, only: [ :create ]
+  before_action :validate_measure_unit, only: [ :create, :update ]
 
   # GET /products
   def index

@@ -5,7 +5,7 @@ class CreateRecipes < ActiveRecord::Migration[8.0]
       t.text    :description
       t.integer :prep_time
       t.integer :servings
-      t.json    :steps     
+      t.json    :steps
 
       t.timestamps
     end

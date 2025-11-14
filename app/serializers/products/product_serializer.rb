@@ -15,7 +15,7 @@ module Products
     def self.serialize_collection(products)
       {
         collection: [
-          products.map do |product| 
+          products.map do |product|
             new(product).as_json
           end
         ]

@@ -1,7 +1,7 @@
 class StorageController < ApplicationController
   before_action :set_storage_params, only: :add_product_to_storage
   before_action :product_exists?, only: :add_product_to_storage
-  before_action :validate_measure_unit, only: [:add_product_to_storage]
+  before_action :validate_measure_unit, only: [ :add_product_to_storage ]
 
   # GET /storage
   def index
@@ -25,7 +25,7 @@ class StorageController < ApplicationController
   end
 
   private
-  
+
   def set_storage_params
     @storage_params = storage_params_with_validation
   end

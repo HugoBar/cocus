@@ -17,14 +17,14 @@ module Products
 
     def find(id)
       Product.find(id)
-    end 
+    end
 
     def create(params)
       mapped_params = params.merge(unit: map_measure_unit(params[:unit]))
 
       Product.create!(mapped_params)
     end
-    
+
     def update(id, params)
       product = Product.find(id)
       product.update(params)

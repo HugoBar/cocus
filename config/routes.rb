@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   resources :recipes do
     member do
-      post :complete, to: 'recipes#complete_recipe'
+      post :complete, to: "recipes#complete_recipe"
     end
 
     collection do
@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       post :add_product_to_storage
     end
   end
-  
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

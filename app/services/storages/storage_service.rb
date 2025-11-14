@@ -6,7 +6,7 @@ module Storages
 
     def find(id)
       Storage.includes(:product).find(id)
-    end 
+    end
 
     def add_product_to_storage(product)
       storage = Storage.find_or_initialize_by(product_id: product[:product_id])
@@ -20,9 +20,9 @@ module Storages
 
     def remove_from_storage(product)
       storage = Storage.find_by(product_id: product[:product_id])
-      
+
       removed_quantity = UnitConverter.to_base(product[:quantity], product[:unit], storage.product)
-      updated_quantity = [storage[:quantity] - removed_quantity, 0].max
+      updated_quantity = [ storage[:quantity] - removed_quantity, 0 ].max
 
       storage.update(quantity: updated_quantity, unit: storage.product.unit)
       storage

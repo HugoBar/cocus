@@ -23,8 +23,8 @@ module Recipes
       storage = Storages::StorageService.new.remove_batch(recipe[:recipe_products_attributes])
 
       log = RecipeLogs.create!(recipe_id: id, ingredients: recipe[:recipe_products_attributes])
-      
-      {storage: storage, recipe_id: log.recipe_id}
+
+      { storage: storage, recipe_id: log.recipe_id }
     rescue Unitwise::ConversionError => e
       raise ConversionError, e.message
     end
@@ -52,7 +52,7 @@ module Recipes
       recipe.recipe_products.filter_map do |recipe_product|
         product_in_storage = Storage.find_by(product_id: recipe_product.product_id)
         next unless product_in_storage
-        
+
         required_quantity = UnitConverter.to_base(
           recipe_product.quantity,
           recipe_product.unit,

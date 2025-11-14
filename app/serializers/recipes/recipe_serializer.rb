@@ -19,7 +19,7 @@ module Recipes
     def self.serialize_collection(recipes)
       {
         collection: [
-          recipes.map do |recipe| 
+          recipes.map do |recipe|
             new(recipe).as_json
           end
         ]

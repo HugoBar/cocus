@@ -55,7 +55,7 @@ class RecipesController < ApplicationController
     @recipe_params = recipe_params_with_validations
     ensure_measure_unit!(@recipe_params)
   end
-  
+
   def set_complete_recipe_params
     @complete_recipe_params = complete_recipe_params_with_validations
     ensure_measure_unit!(@complete_recipe_params)
