@@ -39,5 +39,14 @@ module Storages
 
       updated_storage
     end
+
+    def update(id, product_params)
+      storage = Storage.find_by(id: id, product_id: product_params[:product_id])
+      
+      raise ActiveRecord::RecordNotFound, "Product not found in storage" unless storage
+      
+      storage.update(product_params)
+      storage
+    end
   end
 end

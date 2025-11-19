@@ -17,15 +17,23 @@ class StorageController < ApplicationController
     render json: Storages::StorageSerializer.new(storage).as_json
   end
 
-  # POST /storage
+  # POST /add_product_to_storage
   def add_product_to_storage
     storage = Storages::StorageService.new.add_product_to_storage(@storage_params)
 
     render json: storage, status: :created, location: storage
   end
 
+  # POST /remove_product_from_storage
   def remove_product_from_storage
     storage = Storages::StorageService.new.remove_product_from_storage(@storage_params)
+
+    render json: Storages::StorageSerializer.new(storage).as_json
+  end
+
+  # PATCH/PUT /storage/1
+  def update
+    storage = Storages::StorageService.new.update(params[:id], product_params)
 
     render json: Storages::StorageSerializer.new(storage).as_json
   end
@@ -42,5 +50,9 @@ class StorageController < ApplicationController
 
   def validate_measure_unit
     ensure_measure_unit!(@storage_params)
+  end
+
+  def product_params
+    params.require(:product).permit(:product_id, :quantity)
   end
 end
