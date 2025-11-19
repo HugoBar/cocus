@@ -1,7 +1,7 @@
 class StorageController < ApplicationController
-  before_action :set_storage_params, only: :add_product_to_storage
-  before_action :product_exists?, only: :add_product_to_storage
-  before_action :validate_measure_unit, only: [ :add_product_to_storage ]
+  before_action :set_storage_params, only: [ :add_product_to_storage, :remove_product_from_storage ]
+  before_action :product_exists?, only: [ :add_product_to_storage, :remove_product_from_storage ]
+  before_action :validate_measure_unit, only: [ :add_product_to_storage, :remove_product_from_storage ]
 
   # GET /storage
   def index
@@ -12,9 +12,9 @@ class StorageController < ApplicationController
 
   # GET /storage/1
   def show
-    recipe = Storages::StorageService.new.find(params[:id])
+    storage = Storages::StorageService.new.find(params[:id])
 
-    render json: Storages::StorageSerializer.new(recipe).as_json
+    render json: Storages::StorageSerializer.new(storage).as_json
   end
 
   # POST /storage
@@ -22,6 +22,12 @@ class StorageController < ApplicationController
     storage = Storages::StorageService.new.add_product_to_storage(@storage_params)
 
     render json: storage, status: :created, location: storage
+  end
+
+  def remove_product_from_storage
+    storage = Storages::StorageService.new.remove_product_from_storage(@storage_params)
+
+    render json: Storages::StorageSerializer.new(storage).as_json
   end
 
   private

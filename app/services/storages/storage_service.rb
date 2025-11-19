@@ -18,7 +18,7 @@ module Storages
       storage
     end
 
-    def remove_from_storage(product)
+    def remove_product_from_storage(product)
       storage = Storage.find_by(product_id: product[:product_id])
 
       removed_quantity = UnitConverter.to_base(product[:quantity], product[:unit], storage.product)
@@ -33,7 +33,7 @@ module Storages
 
       ActiveRecord::Base.transaction do
         products.each do |p|
-          updated_storage  << remove_from_storage(p)
+          updated_storage  << remove_product_from_storage(p)
         end
       end
 

@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   resources :storage do
     collection do
       post :add_product_to_storage
+      post :remove_product_from_storage
     end
   end
 
