@@ -18,11 +18,10 @@ module Recipes
 
     def self.serialize_collection(recipes)
       {
-        collection: [
+        collection: 
           recipes.map do |recipe|
             new(recipe).as_json
           end
-        ]
       }
     end
 

@@ -3,19 +3,16 @@ module Recipes
     def available_recipes(include_unavailable: false)
       all_recipes = Recipe.includes(recipe_products: :product).all
 
-      if include_unavailable
-        all_recipes.map do |recipe|
-          available = can_be_made?(recipe)
-          {
-            recipe: recipe,
-            available: available,
-            missing_ingredients: missing_ingredients_for(recipe, available)
-          }
-        end
-      else
-        all_recipes
-          .select { |recipe| can_be_made?(recipe) }
-          .map { |recipe| { recipe: recipe, available: true, missing_ingredients: [] } }
+      all_recipes = filtered_recipes(all_recipes) unless include_unavailable
+
+      all_recipes.map do |recipe|
+        available = can_be_made?(recipe)
+
+        recipe.ingredients = recipe.recipe_products
+        recipe.missing_ingredients = missing_ingredients_for(recipe, available)
+        recipe.available = available
+          
+        recipe
       end
     end
 
@@ -30,6 +27,10 @@ module Recipes
     end
 
     private
+
+    def filtered_recipes(recipes)
+      recipes.select { |recipe| can_be_made?(recipe)}
+    end
 
     def can_be_made?(recipe)
       recipe.recipe_products.all? do |recipe_product|
@@ -63,9 +64,9 @@ module Recipes
 
         if missing_quantity.negative?
           IngredientItem.new(
-            product: recipe_product.product,
-            quantity: missing_quantity.abs,
-            unit: product_in_storage.unit
+            recipe_product.product,
+            missing_quantity.abs,
+            product_in_storage.unit
           )
         end
       end

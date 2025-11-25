@@ -1,18 +1,21 @@
 module Recipes
   class AvailableRecipeSerializer
-    attr_reader :recipe, :available, :missing_ingredients
 
     def initialize(recipe)
-      @recipe = recipe[:recipe]
-      @available = recipe[:available]
-      @missing_ingredients = recipe[:missing_ingredients]
+      @recipe = recipe
     end
 
     def as_json
       {
-        recipe: serialize_recipe,
-        available: available,
-        missing_ingredients: serialize_ingredients(missing_ingredients)
+        id: @recipe.id,
+        name: @recipe.name,
+        description: @recipe.description,
+        prep_time: @recipe.prep_time,
+        servings: @recipe.servings,
+        steps: @recipe.steps,
+        ingredients: serialize_ingredients(@recipe.ingredients),
+        missing_ingredients: serialize_ingredients(@recipe.missing_ingredients),
+        available: @recipe.available
       }
     end
 
@@ -21,18 +24,6 @@ module Recipes
     end
 
     private
-
-    def serialize_recipe
-      {
-        id: recipe.id,
-        name: recipe.name,
-        description: recipe.description,
-        prep_time: recipe.prep_time,
-        servings: recipe.servings,
-        steps: recipe.steps,
-        ingredients: serialize_ingredients(recipe.recipe_products)
-      }
-    end
 
     def serialize_ingredients(ingredients)
       ingredients.map do |ingredient|
