@@ -8,6 +8,7 @@ module Storages
       {
         id: @storage.id,
         product_id: @storage.product_id,
+        product_name: @storage.product.name,
         quantity: @storage.quantity,
         unit: @storage.unit
       }
@@ -15,11 +16,10 @@ module Storages
 
     def self.serialize_collection(storages)
       {
-        collection: [
+        collection: 
           storages.map do |storage|
             new(storage).as_json
           end
-        ]
       }
     end
   end
