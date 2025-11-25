@@ -8,17 +8,18 @@ module Products
       {
         id: @product.id,
         name: @product.name,
-        unit: @product.unit
+        unit: @product.unit,
+        density: @product.density
       }
     end
 
     def self.serialize_collection(products)
       {
-        collection: [
+        collection: 
           products.map do |product|
             new(product).as_json
           end
-        ]
+        
       }
     end
   end
