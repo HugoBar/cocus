@@ -19,7 +19,7 @@ class ApplicationController < ActionController::API
     else
       render json: {
         error: "Validation failed",
-        details: record.errors
+        message: record.errors
       }, status: :unprocessable_entity
     end
   end
@@ -31,35 +31,35 @@ class ApplicationController < ActionController::API
   def handle_parameter_missing(exception)
     render json: {
       error: "Missing required parameter",
-      details: exception.message
+      message: exception.message
     }, status: :bad_request
   end
 
   def handle_record_not_found(exception)
     render json: {
       error: "Record not found",
-      details: exception.message
+      message: exception.message
     }, status: :not_found
   end
 
   def handle_internal_error(exception)
     render json: {
       error: "Internal server error",
-      details: exception.message
+      message: exception.message
     }, status: :internal_server_error
   end
 
   def handle_measure_unit_invalid(exception)
     render json: {
       error: "Invalid measure unit",
-      details: "Allowed units are: #{ALLOWED_UNITS.join(', ')}"
+      message: "Allowed units are: #{ALLOWED_UNITS.join(', ')}"
     }, status: :unprocessable_entity
   end
 
   def handle_conversion_error(exception)
     render json: {
       error: "Invalid measure unit conversion",
-      details: exception.message
+      message: exception.message
     }, status: :bad_request
   end
 end
