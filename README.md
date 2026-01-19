@@ -2,6 +2,9 @@
 
 Cocus is a Rails web app that helps you manage your recipes and fridge inventory. Track ingredients, check which recipes you can cook, and adjust quantities after cooking.
 
+> The web interface is maintained in a separate repository: [Cocus-Web](https://github.com/HugoBar/cocus-web). 
+> This frontend connects to the backend to display recipes, manage ingredients, and generate shopping lists.
+
 ---
 
 ## Key Features
