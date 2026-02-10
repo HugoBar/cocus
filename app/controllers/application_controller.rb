@@ -1,13 +1,17 @@
 class ApplicationController < ActionController::API
   include ParamValidations
 
-  rescue_from ActiveRecord::RecordInvalid,          with: :handle_record_invalid
-  rescue_from ActiveRecord::RecordNotUnique,        with: :handle_record_not_unique
-  rescue_from ActionController::ParameterMissing,   with: :handle_parameter_missing
-  rescue_from ActiveRecord::RecordNotFound,         with: :handle_record_not_found
-  rescue_from InvalidMeasureUnitError,              with: :handle_measure_unit_invalid
-  rescue_from Unitwise::ConversionError,            with: :handle_conversion_error
-  rescue_from StandardError,                        with: :handle_internal_error unless Rails.env.development?
+  rescue_from ActiveRecord::RecordInvalid,            with: :handle_record_invalid
+  rescue_from ActiveRecord::RecordNotUnique,          with: :handle_record_not_unique
+  rescue_from ActionController::ParameterMissing,     with: :handle_parameter_missing
+  rescue_from ActiveRecord::RecordNotFound,           with: :handle_record_not_found
+  rescue_from InvalidMeasureUnitError,                with: :handle_measure_unit_invalid
+  rescue_from Unitwise::ConversionError,              with: :handle_conversion_error
+  rescue_from Domain::Recipe::InvalidRecipeError,     with: :handle_recipe_invalid
+  rescue_from Domain::Recipe::InvalidIngredientError, with: :handle_recipe_invalid_ingredient
+  rescue_from Domain::Recipe::InvalidQuantityError,   with: :handle_recipe_invalid_quantity
+  rescue_from Domain::Recipe::InvalidStepError,       with: :handle_recipe_invalid_step
+  rescue_from StandardError,                          with: :handle_internal_error unless Rails.env.development?
 
   private
 
@@ -61,5 +65,33 @@ class ApplicationController < ActionController::API
       error: "Invalid measure unit conversion",
       message: exception.message
     }, status: :bad_request
+  end
+
+  def handle_recipe_invalid(exception)
+    render json: {
+      error: "Invalid recipe",
+      message: exception.message
+    }, status: :unprocessable_entity
+  end
+
+  def handle_recipe_invalid_ingredient(exception)
+    render json: {
+      error: "Invalid ingredient",
+      message: exception.message
+    }, status: :unprocessable_entity
+  end
+
+  def handle_recipe_invalid_quantity(exception)
+    render json: {
+      error: "Invalid quantity",
+      message: exception.message
+    }, status: :unprocessable_entity
+  end
+
+  def handle_recipe_invalid_step(exception)
+    render json: {
+      error: "Invalid step",
+      message: exception.message
+    }, status: :unprocessable_entity
   end
 end
