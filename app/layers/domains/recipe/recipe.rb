@@ -1,10 +1,12 @@
-module Domain
+module Domains
   module Recipe
+    require_relative 'errors'
+
     # Represents a cooking recipe with its name, description, ingredients, steps,
     # number of servings, and preparation time.
     #
     # Example usage:
-    #   recipe = Domain::Recipe::Recipe.new(
+    #   recipe = Domains::Recipe::Recipe.new(
     #     "Pancakes",
     #     "Fluffy homemade pancakes",
     #     [{ product_id: 1, quantity: "2 cups" }, { product_id: 2, quantity: "1 cup" }],
@@ -13,7 +15,7 @@ module Domain
     #     15.0
     #   )
     class Recipe 
-      attr_reader :name, :description, :ingredients, :steps, :servings, :prep_time
+      attr_reader :id, :name, :description, :ingredients, :steps, :servings, :prep_time
 
       # Initializes a new Recipe object.
       #
@@ -23,7 +25,8 @@ module Domain
       # @param steps [Array<Hash>] list of step attributes
       # @param servings [Integer] number of servings
       # @param prep_time [Float] preparation time in minutes
-      def initialize(name, description, ingredients, steps, servings, prep_time)
+      def initialize(id, name, description, ingredients, steps, servings, prep_time)
+        @id = id
         @name = name
         @description = description
         @ingredients = ingredients.map { |i| Ingredient.new(**i) } 

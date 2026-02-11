@@ -1,4 +1,4 @@
-module Domain
+module Domains
   module Recipe
     class InvalidRecipeError < StandardError; end
     class InvalidIngredientError < StandardError; end

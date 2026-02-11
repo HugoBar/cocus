@@ -1,4 +1,4 @@
-module Domain
+module Domains
   module Recipe
     require_relative 'errors'
 
@@ -11,12 +11,12 @@ module Domain
     # its order in the recipe.
     #
     # Example usage:
-    #   step = Domain::Recipe::Step.new(
+    #   step = Domains::Recipe::Step.new(
     #     description: "Mix ingredients in a bowl",
     #     position: 1
     #   )
     class Step
-      include Domain::Shared::ValueObject
+      include Domains::Shared::ValueObject
 
       # Attributes used to determine equality for the Value Object
       equality_attributes :description, :position

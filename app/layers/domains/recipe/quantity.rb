@@ -1,4 +1,4 @@
-module Domain
+module Domains
   module Recipe
     require_relative 'errors'
     require 'bigdecimal'
@@ -12,12 +12,12 @@ module Domain
     # It is used in the Ingredient VO.
     #
     # Example usage:
-    #   quantity = Domain::Recipe::Quantity.new(
+    #   quantity = Domains::Recipe::Quantity.new(
     #     amount: 2,
     #     unit: "cups"
     #   )
     class Quantity
-      include Domain::Shared::ValueObject
+      include Domains::Shared::ValueObject
 
       # Attributes used to determine equality for the Value Object
       equality_attributes :amount, :unit

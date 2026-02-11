@@ -1,4 +1,4 @@
-module Domain
+module Domains
   module Shared
     # Mixin module to define Value Objects (VOs).
     #
@@ -10,7 +10,7 @@ module Domain
     #
     # Example usage:
     #   class Step
-    #     include Domain::Shared::ValueObject
+    #     include Domains::Shared::ValueObject
     #     equality_attributes :description, :position
     #   end
     #

@@ -1,4 +1,4 @@
-module Domain
+module Domains
   module Recipe
     require_relative 'errors'
 
@@ -11,14 +11,14 @@ module Domain
     # and an optional position indicating its order in the ingredient list.
     #
     # Example usage:
-    #   ingredient = Domain::Recipe::Ingredient.new(
+    #   ingredient = Domains::Recipe::Ingredient.new(
     #     product_id: 1,
     #     quantity: 2,
     #     unit: "cups",
     #     position: 1
     #   )
     class Ingredient
-      include Domain::Shared::ValueObject
+      include Domains::Shared::ValueObject
 
       # Attributes used to determine equality for the Value Object
       equality_attributes :product_id, :quantity
@@ -33,7 +33,7 @@ module Domain
       # @param position [Integer, nil] optional position in the ingredient list
       def initialize(product_id:, quantity:, unit:, position: nil)
         @product_id = product_id.to_i
-        @quantity = Quantity.new(quantity, unit)
+        @quantity = Quantity.new(amount: quantity, unit:)
         @position = position.to_i if position
         
         validate! # ensure the ingredient is valid
