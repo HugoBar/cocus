@@ -3,16 +3,16 @@ module Infrastructure
     module Recipe
       class ArRecipeRepository < Domains::Recipe::RecipeRepository
         def find(id)
-          ar = ::Recipe.find(id)
-          
+          recipe = ::Recipe.find(id)
+
           Domains::Recipe::Recipe.new(
-            id: ar.id,
-            name: ar.name,
-            description: ar.description,
-            ingredients: ar.ingredients.map { |i| { product_id: i.product_id, quantity: i.quantity } },
-            steps: ar.steps.map { |s| { position: s.position, instruction: s.instruction } },
-            servings: ar.servings,
-            prep_time: ar.prep_time
+            id: recipe.id,
+            name: recipe.name,
+            description: recipe.description,
+            ingredients: recipe.recipe_products.map { |i| { product_id: i.product_id, quantity: i.quantity, unit: i.unit } },
+            steps: recipe.steps.map.with_index { |s, i| { position: i + 1, description: s } },
+            servings: recipe.servings,
+            prep_time: recipe.prep_time
           )
         end
       end
