@@ -7,13 +7,14 @@ module Domains
     # Ingredient is a Value Object (VO), meaning it is immutable and represents
     # an atomic piece of data in a recipe.
     #
-    # Each ingredient has a product_id, quantity (wrapped in a Quantity object),
-    # and an optional position indicating its order in the ingredient list.
+    # Each ingredient has a product_id, a quantity (wrapped in a
+    # Quantity object using amount and unit), and an optional position
+    # indicating its order in the ingredient list.
     #
     # Example usage:
     #   ingredient = Domains::Recipe::Ingredient.new(
     #     product_id: 1,
-    #     quantity: 2,
+    #     amount: 2,
     #     unit: "cups",
     #     position: 1
     #   )
@@ -28,12 +29,12 @@ module Domains
       # Initializes a new Ingredient object.
       #
       # @param product_id [Integer] the ID of the product
-      # @param quantity [Numeric] the numeric amount of the ingredient
+      # @param amount [Numeric] the numeric amount of the ingredient
       # @param unit [String] the unit of measurement for the quantity
       # @param position [Integer, nil] optional position in the ingredient list
-      def initialize(product_id:, quantity:, unit:, position: nil)
-        @product_id = product_id.to_i
-        @quantity = Quantity.new(amount: quantity, unit:)
+      def initialize(product_id:, amount:, unit:, position: nil)
+        @product_id = product_id
+        @quantity = Quantity.new(amount:, unit:)
         @position = position.to_i if position
         
         validate! # ensure the ingredient is valid
