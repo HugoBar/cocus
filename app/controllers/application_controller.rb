@@ -1,18 +1,20 @@
 require_relative '../layers/domains/recipe/errors'
+require_relative '../layers/domains/product/errors'
 
 class ApplicationController < ActionController::API
   include ParamValidations
-  rescue_from ActiveRecord::RecordInvalid,            with: :handle_record_invalid
-  rescue_from ActiveRecord::RecordNotUnique,          with: :handle_record_not_unique
-  rescue_from ActionController::ParameterMissing,     with: :handle_parameter_missing
-  rescue_from ActiveRecord::RecordNotFound,           with: :handle_record_not_found
-  rescue_from InvalidMeasureUnitError,                with: :handle_measure_unit_invalid
-  rescue_from Unitwise::ConversionError,              with: :handle_conversion_error
-  rescue_from Domains::Recipe::InvalidRecipeError,     with: :handle_recipe_invalid
-  rescue_from Domains::Recipe::InvalidIngredientError, with: :handle_recipe_invalid_ingredient
-  rescue_from Domains::Recipe::InvalidQuantityError,   with: :handle_recipe_invalid_quantity
-  rescue_from Domains::Recipe::InvalidStepError,       with: :handle_recipe_invalid_step
-  rescue_from StandardError,                          with: :handle_internal_error unless Rails.env.development?
+  rescue_from ActiveRecord::RecordInvalid,                 with: :handle_record_invalid
+  rescue_from ActiveRecord::RecordNotUnique,               with: :handle_record_not_unique
+  rescue_from ActionController::ParameterMissing,          with: :handle_parameter_missing
+  rescue_from ActiveRecord::RecordNotFound,                with: :handle_record_not_found
+  rescue_from InvalidMeasureUnitError,                     with: :handle_measure_unit_invalid
+  rescue_from Unitwise::ConversionError,                   with: :handle_conversion_error
+  rescue_from Domains::Recipe::InvalidRecipeError,         with: :handle_recipe_invalid
+  rescue_from Domains::Recipe::InvalidIngredientError,     with: :handle_recipe_invalid_ingredient
+  rescue_from Domains::Recipe::InvalidQuantityError,       with: :handle_recipe_invalid_quantity
+  rescue_from Domains::Recipe::InvalidStepError,           with: :handle_recipe_invalid_step
+  rescue_from Domains::Product::InvalidProductError,       with: :handle_product_invalid
+  rescue_from StandardError,                               with: :handle_internal_error unless Rails.env.development?
 
   private
 
@@ -92,6 +94,13 @@ class ApplicationController < ActionController::API
   def handle_recipe_invalid_step(exception)
     render json: {
       error: "Invalid step",
+      message: exception.message
+    }, status: :unprocessable_entity
+  end
+
+  def handle_product_invalid(exception)
+    render json: {
+      error: "Invalid product",
       message: exception.message
     }, status: :unprocessable_entity
   end
