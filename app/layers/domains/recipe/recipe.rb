@@ -25,7 +25,7 @@ module Domains
       # @param steps [Array<Hash>] list of step attributes
       # @param servings [Integer] number of servings
       # @param prep_time [Float] preparation time in minutes
-      def initialize(id, name, description, ingredients, steps, servings, prep_time)
+      def initialize(id:, name:, description:, ingredients:, steps:, servings:, prep_time:)
         @id = id
         @name = name
         @description = description
