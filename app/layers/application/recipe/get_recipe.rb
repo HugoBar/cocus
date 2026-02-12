@@ -22,13 +22,16 @@ module Application
       #
       # @param id [Integer] the recipe ID
       # @return [Hash] containing:
-      #   - :recipe [Domains::Recipe::Recipe]
-      #   - :products [Array<Domains::Product::Product>]
+      #   - :recipe [Application::Recipe::Dto::RecipeDto]
+      #   - :products [Array<Application::Product::Dto::ProductDto>]
       def call(id:)
         recipe = @recipe_repository.find(id)
         products = @product_repository.find_by_ids(recipe.ingredients.map(&:product_id))
 
-        { recipe: recipe, products: products }
+        recipe_dto = Dto::RecipeDto.from_domain(recipe)
+        product_dtos = products.map { |product| Product::Dto::ProductDto.from_domain(product) }
+
+        { recipe: recipe_dto, products: product_dtos }
       end
     end
   end
