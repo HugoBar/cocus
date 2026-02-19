@@ -3,6 +3,17 @@ module Domains
     require_relative 'errors'
     require 'bigdecimal'
 
+    MAPPED_MEASURE_UNITS = {
+      ml: :ml,
+      l: :ml,
+      tablespoon: :ml,
+      teaspoon: :ml,
+      cup: :ml,
+      count: :ml,
+      g: :g,
+      kg: :g
+    }
+    
     # Represents a quantity for an ingredient, combining an amount and a unit.
     #
     # Quantity is a Value Object (VO), meaning it is immutable and represents
@@ -36,6 +47,18 @@ module Domains
         freeze    # immutability for VO
       end
 
+      # Checks if the quantity's unit is compatible with the given unit.
+      #
+      # Raises an InvalidQuantityError if the units are not compatible.
+      #
+      # @param unit [String, Symbol] the unit to check compatibility against
+      # @raise [InvalidQuantityError] if the units are not compatible
+      def assert_compatible_unit!(unit)
+        unless MAPPED_MEASURE_UNITS[@unit.to_sym] == unit.to_sym
+          raise InvalidQuantityError, "Invalid unit '#{@unit}'"
+        end
+      end
+
       private
 
       # Converts a value to BigDecimal
@@ -45,7 +68,7 @@ module Domains
         begin
           BigDecimal(value.to_s)
         rescue ArgumentError
-          raise InvalidQuantityError, "amount must be a valid number"
+          raise InvalidQuantityError, "amount must be a valid number '#{value}'"
         end
       end
 
