@@ -11,6 +11,15 @@ module Infrastructure
       class ArRecipeRepository < Domains::Recipe::RecipeRepository
         include Infrastructure::Persistence::Recipe::ArRecipeRepositoryHelper
 
+        # Retrieves all recipes from the database.
+        #
+        # @return [Array<Domains::Recipe::Recipe>] an array of domain recipe entities
+        def all
+          ::Recipe.all.map do |recipe|
+            build_domain_recipe_from_ar(recipe)
+          end
+        end
+
         # Finds a recipe by its ID.
         #
         # @param id [Integer] the unique identifier of the recipe
@@ -44,6 +53,7 @@ module Infrastructure
             prep_time: attributes[:prep_time]
           )
 
+          ar_recipe = nil
           ActiveRecord::Base.transaction do
             products = validate_ingredients!(domain_recipe.ingredients)
 

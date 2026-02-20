@@ -1,6 +1,10 @@
 module Domains
   module Recipe
     class RecipeRepository
+      def all
+        raise NotImplementedError
+      end
+      
       def find(id)
         raise NotImplementedError
       end
