@@ -3,6 +3,19 @@ module Infrastructure
     module Recipe
       # Helper module for ArRecipeRepository
       module ArRecipeRepositoryHelper
+        # Builds a domain recipe from an ActiveRecord recipe object
+        def build_domain_recipe_from_ar(recipe)
+          build_domain_recipe(
+            id: recipe.id,
+            name: recipe.name,
+            description: recipe.description,
+            ingredients: ar_to_domain_ingredients(recipe.recipe_products),
+            steps: ar_to_domain_steps(recipe.steps),
+            servings: recipe.servings,
+            prep_time: recipe.prep_time
+          )
+        end
+        
         # Builds a domain recipe entity from provided attributes.
         def build_domain_recipe(id:, name:, description:, ingredients:, steps:, servings:, prep_time:)
           Domains::Recipe::Recipe.new(
@@ -39,20 +52,14 @@ module Infrastructure
         end
 
         # Validates that all ingredient product IDs exist and that units are compatible.
-        # Used by both #create and #update.
+        # Accepts only domain ingredient objects.
         #
-        # @param ingredients [Array<Hash>, Array<DomainIngredient>] The ingredients to validate.
-        # @param type [:domain, :attributes] The type of ingredient objects provided.
+        # @param ingredients [Array<DomainIngredient>] The ingredients to validate.
         # @return [Hash{Integer => ::Product}] Indexed products hash.
         # @raise ActiveRecord::RecordNotFound if any product is missing.
         # @raise Domains::Recipe::InvalidQuantityError if any unit is incompatible.
-        def validate_ingredients!(ingredients, type)
-          product_ids =
-            if type == :domain
-              ingredients.map { |i| i.product_id }
-            else
-              ingredients.map { |i| i[:product_id] }
-            end
+        def validate_ingredients!(ingredients)
+          product_ids = ingredients.map { |i| i.product_id }
           products = ::Product.where(id: product_ids).index_by(&:id)
           missing_product_ids = product_ids - products.keys
           if missing_product_ids.any?
@@ -61,18 +68,8 @@ module Infrastructure
 
           errors = []
           ingredients.each do |ingredient|
-            product =
-              if type == :domain
-                products[ingredient.product_id]
-              else
-                products[ingredient[:product_id]]
-              end
-            quantity =
-              if type == :domain
-                ingredient.quantity
-              else
-                Domains::Recipe::Quantity.new(amount: ingredient[:amount], unit: ingredient[:unit])
-              end
+            product = products[ingredient.product_id]
+            quantity = ingredient.quantity
             begin
               quantity.assert_compatible_unit!(product.unit)
             rescue Domains::Recipe::InvalidQuantityError

@@ -17,16 +17,7 @@ module Infrastructure
         # @return [Domains::Recipe::Recipe] the reconstructed domain recipe entity
         def find(id)
           recipe = ::Recipe.find(id)
-
-          build_domain_recipe(
-            id: recipe.id,
-            name: recipe.name,
-            description: recipe.description,
-            ingredients: ar_to_domain_ingredients(recipe.recipe_products),
-            steps: ar_to_domain_steps(recipe.steps),
-            servings: recipe.servings,
-            prep_time: recipe.prep_time
-          )
+          build_domain_recipe_from_ar(recipe)
         end
 
         # Creates a new recipe and its associated ingredients and steps.
@@ -53,9 +44,8 @@ module Infrastructure
             prep_time: attributes[:prep_time]
           )
 
-          ar_recipe = nil
           ActiveRecord::Base.transaction do
-            products = validate_ingredients!(domain_recipe.ingredients, :domain)
+            products = validate_ingredients!(domain_recipe.ingredients)
 
             ar_recipe = ::Recipe.create!(
               name: domain_recipe.name,
@@ -75,16 +65,7 @@ module Infrastructure
             end
           end
 
-          # Rebuild and return the domain recipe object with the new id
-          build_domain_recipe(
-            id: ar_recipe.id,
-            name: ar_recipe.name,
-            description: ar_recipe.description,
-            ingredients: ar_to_domain_ingredients(ar_recipe.recipe_products),
-            steps: ar_to_domain_steps(ar_recipe.steps),
-            servings: ar_recipe.servings,
-            prep_time: ar_recipe.prep_time
-          )
+          build_domain_recipe_from_ar(ar_recipe)
         end
 
         # Updates an existing recipe and its associated ingredients.
@@ -96,34 +77,40 @@ module Infrastructure
         # @raise ActiveRecord::RecordInvalid if validation fails.
         def update(id, attributes)
           recipe = ::Recipe.find(id)
+          
+          ActiveRecord::Base.transaction do
+            recipe.update(attributes)
 
-          recipe.update(attributes)
+            if attributes.key?(:ingredients)
+              domain_ingredients = attributes_to_domain_ingredients(attributes[:ingredients])
+              products = validate_ingredients!(domain_ingredients)
 
-          if attributes.key?(:ingredients)
-            products = validate_ingredients!(attributes[:ingredients], :attributes)
-
-            recipe.recipe_products.destroy_all
-            attributes[:ingredients].each do |ingredient|
-              recipe.recipe_products.create!(
-                product_id: ingredient[:product_id],
-                quantity: ingredient[:amount],
-                unit: ingredient[:unit]
-              )
+              recipe.recipe_products.destroy_all
+              attributes[:ingredients].each do |ingredient|
+                recipe.recipe_products.create!(
+                  product_id: ingredient[:product_id],
+                  quantity: ingredient[:amount],
+                  unit: ingredient[:unit]
+                )
+              end
             end
           end
-          
-          # Rebuild and return the updated domain recipe object
-          build_domain_recipe(
-            id: recipe.id,
-            name: recipe.name,
-            description: recipe.description,
-            ingredients: ar_to_domain_ingredients(recipe.recipe_products),
-            steps: ar_to_domain_steps(recipe.steps),
-            servings: recipe.servings,
-            prep_time: recipe.prep_time
-          )
+          build_domain_recipe_from_ar(recipe)
         end
         
+        # Deletes a recipe by its ID.
+        #
+        # @param id [Integer] The ID of the recipe to delete.
+        # @return [Domains::Recipe::Recipe] The deleted domain recipe entity.
+        # @raise ActiveRecord::RecordNotFound if the recipe does not exist.
+        def delete(id)
+          recipe = ::Recipe.find(id)
+          domain_recipe = build_domain_recipe_from_ar(recipe)
+          recipe.destroy
+          domain_recipe
+        end
+
+        private
       end
     end
   end
