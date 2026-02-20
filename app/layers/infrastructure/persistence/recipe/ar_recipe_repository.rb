@@ -3,10 +3,13 @@ module Infrastructure
     module Recipe
       # ActiveRecord-based implementation of the RecipeRepository.
       #
-      # This repository is responsible for retrieving and persisting recipe data from the
-      # persistence layer (ActiveRecord models) and mapping it into
-      # domain-level Recipe entities.
+      # This repository handles all persistence operations for recipes using ActiveRecord models.
+      # It is responsible for retrieving, creating, and updating recipe data in the database.
+      #
+      #
+      # @see Domains::Recipe::RecipeRepository
       class ArRecipeRepository < Domains::Recipe::RecipeRepository
+        include Infrastructure::Persistence::Recipe::ArRecipeRepositoryHelper
 
         # Finds a recipe by its ID.
         #
@@ -26,6 +29,18 @@ module Infrastructure
           )
         end
 
+        # Creates a new recipe and its associated ingredients and steps.
+        #
+        # @param attributes [Hash] The attributes for the new recipe, including:
+        #   - :name [String]
+        #   - :description [String]
+        #   - :ingredients [Array<Hash>] (each with :product_id, :amount, :unit)
+        #   - :steps [Array<Hash>] (each with :position, :description)
+        #   - :servings [Integer]
+        #   - :prep_time [Float]
+        # @return [Domains::Recipe::Recipe] The created domain recipe entity.
+        # @raise ActiveRecord::RecordInvalid if validation fails.
+        # @raise ActiveRecord::RecordNotFound if any product is missing.
         def create(attributes)
           # Build a domain recipe object for validation (no id yet)
           domain_recipe = build_domain_recipe(
@@ -72,6 +87,13 @@ module Infrastructure
           )
         end
 
+        # Updates an existing recipe and its associated ingredients.
+        #
+        # @param id [Integer] The ID of the recipe to update.
+        # @param attributes [Hash] The attributes to update (same structure as #create).
+        # @return [Domains::Recipe::Recipe] The updated domain recipe entity.
+        # @raise ActiveRecord::RecordNotFound if the recipe or any product is missing.
+        # @raise ActiveRecord::RecordInvalid if validation fails.
         def update(id, attributes)
           recipe = ::Recipe.find(id)
 
@@ -102,105 +124,6 @@ module Infrastructure
           )
         end
         
-        # Shared ingredient validation for create and update
-        # Accepts either domain ingredient objects or attribute hashes
-        # Returns indexed products hash
-        def validate_ingredients!(ingredients, type)
-          product_ids =
-            if type == :domain
-              ingredients.map { |i| i.product_id }
-            else
-              ingredients.map { |i| i[:product_id] }
-            end
-          products = ::Product.where(id: product_ids).index_by(&:id)
-          missing_product_ids = product_ids - products.keys
-          if missing_product_ids.any?
-            raise ActiveRecord::RecordNotFound, "Products with IDs #{missing_product_ids.join(', ')} not found"
-          end
-
-          errors = []
-          ingredients.each do |ingredient|
-            product =
-              if type == :domain
-                products[ingredient.product_id]
-              else
-                products[ingredient[:product_id]]
-              end
-            quantity =
-              if type == :domain
-                ingredient.quantity
-              else
-                Domains::Recipe::Quantity.new(amount: ingredient[:amount], unit: ingredient[:unit])
-              end
-            begin
-              quantity.assert_compatible_unit!(product.unit)
-            rescue Domains::Recipe::InvalidQuantityError
-              errors << "Invalid unit '#{quantity.unit}' for product '#{product.name}' (expected: '#{product.unit}')"
-            end
-          end
-          unless errors.empty?
-            raise Domains::Recipe::InvalidQuantityError, errors.join('; ')
-          end
-          products
-        end
-
-        private
-
-        # Builds a domain recipe entity from provided attributes.
-        #
-        # @param id [Integer, nil] the recipe id
-        # @param name [String] the recipe name
-        # @param description [String] the recipe description
-        # @param ingredients [Array<Hash>] the ingredient attributes
-        # @param steps [Array<Hash>] the step attributes
-        # @param servings [Integer] the number of servings
-        # @param prep_time [Float] the preparation time
-        # @return [Domains::Recipe::Recipe] the domain recipe entity
-        def build_domain_recipe(id:, name:, description:, ingredients:, steps:, servings:, prep_time:)
-          Domains::Recipe::Recipe.new(
-            id: id,
-            name: name,
-            description: description,
-            ingredients: ingredients,
-            steps: steps,
-            servings: servings,
-            prep_time: prep_time
-          )
-        end
-
-        # Converts ActiveRecord recipe_products to domain ingredient hashes.
-        #
-        # @param recipe_products [ActiveRecord::Relation] the recipe products
-        # @return [Array<Hash>] the domain ingredient hashes
-        def ar_to_domain_ingredients(recipe_products)
-          recipe_products.map do |i|
-            { product_id: i.product_id, amount: i.quantity, unit: i.unit }
-          end
-        end
-
-        # Converts ActiveRecord steps to domain step hashes.
-        #
-        # @param steps [ActiveRecord::Relation] the recipe steps
-        # @return [Array<Hash>] the domain step hashes
-        def ar_to_domain_steps(steps)
-          steps.map.with_index { |s, idx| { position: s["position"], description: s["description"] } }
-        end
-
-        # Converts input ingredient attributes to domain ingredient hashes.
-        #
-        # @param ingredients [Array<Hash>] the input ingredient attributes
-        # @return [Array<Hash>] the domain ingredient hashes
-        def attributes_to_domain_ingredients(ingredients)
-          ingredients.map { |i| { product_id: i[:product_id], amount: i[:amount], unit: i[:unit] } }
-        end
-
-        # Converts input step attributes to domain step hashes.
-        #
-        # @param steps [Array<Hash>] the input step attributes
-        # @return [Array<Hash>] the domain step hashes
-        def attributes_to_domain_steps(steps)
-          steps.map { |s| { position: s[:position], description: s[:description] } }
-        end
       end
     end
   end
