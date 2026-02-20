@@ -8,6 +8,14 @@ module Domains
       def create(attributes)
         raise NotImplementedError
       end
+
+      def update(id, attributes)
+        raise NotImplementedError
+      end
+
+      def delete(id)
+        raise NotImplementedError
+      end
     end
   end
 end
