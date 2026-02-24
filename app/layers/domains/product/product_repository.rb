@@ -8,6 +8,10 @@ module Domains
       def all
         raise NotImplementedError
       end
+
+      def create(attributes)
+        raise NotImplementedError
+      end
     end
   end
 end

@@ -39,6 +39,27 @@ module Infrastructure
             build_domain_product_from_ar(product)
           end
         end
+
+        # Creates a new product.
+        #
+        # @param attributes [Hash] the attributes for the new product (name, unit, density)
+        # @return [Domains::Product::Product] the created domain product instance
+        def create(attributes)
+          domain_product = build_domain_product(
+            id: nil,
+            name: attributes[:name],
+            unit: attributes[:unit],
+            density: attributes[:density]
+          )
+
+          ar_product = ::Product.create!(
+            name: domain_product.name,
+            unit: domain_product.unit.to_s,
+            density: domain_product.density
+          )
+
+          build_domain_product_from_ar(ar_product)
+        end
       end
     end
   end

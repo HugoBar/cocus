@@ -45,9 +45,6 @@ module Domains
       #
       # @raise [InvalidProductError] if any validation fails
       def validate!
-        # Validate ID
-        raise InvalidProductError, "id must be a positive integer" unless id.is_a?(Integer) && id > 0
-
         # Validate presence of name and unit
         raise InvalidProductError, "name cannot be blank" if name.nil? || name.strip.empty?
         raise InvalidProductError, "unit cannot be blank" if unit.nil?
