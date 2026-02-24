@@ -119,8 +119,6 @@ module Infrastructure
           recipe.destroy
           domain_recipe
         end
-
-        private
       end
     end
   end
