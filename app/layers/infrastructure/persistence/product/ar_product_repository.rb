@@ -60,6 +60,35 @@ module Infrastructure
 
           build_domain_product_from_ar(ar_product)
         end
+
+        # Updates an existing product.
+        #
+        # @param id [Integer] the product ID
+        # @param attributes [Hash] the attributes to update (name, unit, density)
+        # @return [Domains::Product::Product] the updated domain product instance        
+        def update(id, attributes)
+          if attributes.key?(:unit)
+            raise Domains::Product::InvalidProductError, "Unit cannot be updated for a product."
+          end
+
+          ar_product = ::Product.find(id)
+
+          # Build a domain product to validate new state and apply business rules
+          domain_product = build_domain_product(
+            id: ar_product.id,
+            name: attributes[:name] || ar_product.name,
+            unit: ar_product.unit, # unit is immutable
+            density: attributes[:density] || ar_product.density
+          )
+
+          # Update the ActiveRecord product with validated values
+          ar_product.update!(
+            name: domain_product.name,
+            density: domain_product.density
+          )
+
+          build_domain_product_from_ar(ar_product)
+        end
       end
     end
   end
