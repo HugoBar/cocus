@@ -7,18 +7,14 @@ module Infrastructure
       # persistence layer (ActiveRecord models) and mapping it into
       # domain-level Product entities.
       class ArProductRepository < Domains::Product::ProductRepository
+        include Infrastructure::Persistence::Product::ArProductRepositoryHelper
 
         # Retrieves all products.
         #
         # @return [Array<Domains::Product::Product>] an array of domain product instances
         def all
           ::Product.all.map do |product|
-            Domains::Product::Product.new(
-              id: product.id,
-              name: product.name,
-              unit: product.unit.to_sym,
-              density: product.density
-            )
+            build_domain_product_from_ar(product)
           end
         end
         
@@ -29,12 +25,7 @@ module Infrastructure
         def find(id)
           product = ::Product.find(id)
 
-          Domains::Product::Product.new(
-            id: product.id,
-            name: product.name,
-            unit: product.unit.to_sym,
-            density: product.density
-          )
+          build_domain_product_from_ar(product)
         end
 
         # Finds multiple products by their IDs.
@@ -45,12 +36,7 @@ module Infrastructure
           products = ::Product.where(id: ids)
 
           products.map do |product|
-            Domains::Product::Product.new(
-              id: product.id,
-              name: product.name,
-              unit: product.unit.to_sym,
-              density: product.density
-            )
+            build_domain_product_from_ar(product)
           end
         end
       end

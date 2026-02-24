@@ -21,7 +21,7 @@ module Application
       def call(id:)
         product = @product_repository.find(id)
 
-        Product::Dto::ProductDto.from_domain(product)
+        Dto::ProductDto.from_domain(product)
       end
     end
   end

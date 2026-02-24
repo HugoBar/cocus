@@ -11,7 +11,7 @@ module Infrastructure
       class ArRecipeRepository < Domains::Recipe::RecipeRepository
         include Infrastructure::Persistence::Recipe::ArRecipeRepositoryHelper
 
-        # Retrieves all recipes from the database.
+        # Retrieves all recipes.
         #
         # @return [Array<Domains::Recipe::Recipe>] an array of domain recipe entities
         def all
