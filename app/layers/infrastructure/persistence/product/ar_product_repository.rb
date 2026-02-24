@@ -89,6 +89,19 @@ module Infrastructure
 
           build_domain_product_from_ar(ar_product)
         end
+
+        # Deletes a product by its ID.
+        #
+        # @param id [Integer] the product ID to delete
+        # @return [Domains::Product::Product, nil] the deleted domain product instance
+        def delete(id)
+          ar_product = ::Product.find(id)
+
+          domain_product = build_domain_product_from_ar(ar_product)
+          ar_product.destroy!
+          
+          domain_product
+        end
       end
     end
   end

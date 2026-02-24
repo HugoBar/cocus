@@ -16,6 +16,10 @@ module Domains
       def update(id, attributes)
         raise NotImplementedError
       end
+
+      def delete(id)
+        raise NotImplementedError
+      end
     end
   end
 end
