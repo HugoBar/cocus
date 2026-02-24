@@ -8,6 +8,20 @@ module Infrastructure
       # domain-level Product entities.
       class ArProductRepository < Domains::Product::ProductRepository
 
+        # Retrieves all products.
+        #
+        # @return [Array<Domains::Product::Product>] an array of domain product instances
+        def all
+          ::Product.all.map do |product|
+            Domains::Product::Product.new(
+              id: product.id,
+              name: product.name,
+              unit: product.unit.to_sym,
+              density: product.density
+            )
+          end
+        end
+        
         # Finds a product by its ID.
         #
         # @param id [Integer] the product ID

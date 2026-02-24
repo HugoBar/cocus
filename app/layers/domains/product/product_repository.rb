@@ -4,6 +4,10 @@ module Domains
       def find(id)
         raise NotImplementedError
       end
+
+      def all
+        raise NotImplementedError
+      end
     end
   end
 end
