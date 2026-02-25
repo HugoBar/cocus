@@ -31,8 +31,8 @@ module Domains
         @description = description
         @ingredients = ingredients.map { |i| Ingredient.new(**i) }
         @steps = steps.map { |s| Step.new(**s) }
-        @servings = servings.to_i
-        @prep_time = prep_time.to_f
+        @servings = servings
+        @prep_time = prep_time
 
         validate! # ensure the recipe is valid
       end
@@ -44,7 +44,9 @@ module Domains
       # @raise [InvalidRecipeError] if any validation fails
       def validate!
         # Validate presence of name and description
+        raise InvalidRecipeError, "name must be a string" unless name.is_a?(String)
         raise InvalidRecipeError, "name cannot be blank" if name.nil? || name.strip.empty?
+        raise InvalidRecipeError, "description must be a string" unless description.is_a?(String)
         raise InvalidRecipeError, "description cannot be blank" if description.nil? || description.strip.empty?
 
         # Add validation to ensure there is at least one ingredient and one step
@@ -66,10 +68,12 @@ module Domains
         end
 
         # Validate servings
+        raise InvalidRecipeError, "servings must be an integer"unless servings.is_a?(Integer)          
         raise InvalidRecipeError, "servings must be more than 0" unless servings > 0
         raise InvalidRecipeError, "servings cannot exceed 999" if servings > 999
 
         # Validate preparation time
+        raise InvalidRecipeError, "prep_time must be a number" unless prep_time.is_a?(Numeric)
         raise InvalidRecipeError, "prep_time must be more than 0" unless prep_time > 0
         raise InvalidRecipeError, "prep_time cannot exceed 999" if prep_time > 999
       end

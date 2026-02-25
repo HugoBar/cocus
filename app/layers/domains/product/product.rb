@@ -45,7 +45,8 @@ module Domains
       # @raise [InvalidProductError] if any validation fails
       def validate!
         # Validate presence of name and unit
-        raise InvalidProductError, "name cannot be blank" if name.nil? || name.strip.empty?
+        raise InvalidProductError, "name must be a string" unless name.is_a?(String)
+        raise InvalidProductError, "name cannot be blank" if name.strip.empty?
         raise InvalidProductError, "unit cannot be blank" if unit.nil?
         raise InvalidProductError, "unit must be valid" unless BASE_UNITS.include?(unit)
 
@@ -54,6 +55,7 @@ module Domains
 
         # Validate density if provided
         if density
+          raise InvalidProductError, "density must be a number" unless density.is_a?(Numeric)
           raise InvalidProductError, "density must be a positive number" unless density > 0
         end
       end

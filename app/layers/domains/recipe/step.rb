@@ -29,7 +29,7 @@ module Domains
       # @param position [Integer] the step's order in the recipe
       def initialize(description:, position:)
         @description = description
-        @position = position.to_i
+        @position = position
 
         validate! # ensure the step is valid
         freeze    # immutability for VO
@@ -42,11 +42,13 @@ module Domains
       # @raise [InvalidStepError] if any validation fails
       def validate!
         # Validate description presence and length
+        raise InvalidStepError, "description must be a string" unless description.is_a?(String)
         raise InvalidStepError, "description cannot be blank" if description.nil? || description.strip.empty?
         raise InvalidStepError, "description must be under 1000 characters" if description.length > 1000
         raise InvalidStepError, "description must be at least 3 characters" if description.length < 3
 
         # Validate position
+        raise InvalidStepError, "position must be an integer" unless position.is_a?(Integer)
         raise InvalidStepError, "position must be positive" if position <= 0
         raise InvalidStepError, "position cannot exceed 999" if position > 999
       end

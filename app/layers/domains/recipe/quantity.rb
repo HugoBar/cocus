@@ -41,7 +41,7 @@ module Domains
       # @param unit [String, Symbol] the unit of measurement
       def initialize(amount:, unit:)
         @amount = to_big_decimal(amount) # ensure numeric precision
-        @unit = unit.to_sym
+        @unit = unit
 
         validate! # ensure the quantity is valid
         freeze    # immutability for VO
@@ -81,7 +81,9 @@ module Domains
         raise InvalidQuantityError, "amount cannot exceed 999" if amount > 999
 
         # Validate unit
-        raise InvalidQuantityError, "unit must be valid" unless ALLOWED_UNITS.include?(unit.to_s)
+        raise InvalidQuantityError, "unit must be a string" unless unit.is_a?(String)
+        raise InvalidQuantityError, "unit cannot be blank" if unit.nil? || unit.to_s.strip.empty?
+        raise InvalidQuantityError, "unit must be valid" unless ALLOWED_UNITS.include?(unit)
       end
     end
   end
