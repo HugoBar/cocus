@@ -24,7 +24,7 @@ module Application
       # @return [Hash] containing:
       #   - :recipe [Application::Recipe::Dto::RecipeDto]
       #   - :products [Array<Application::Product::Dto::ProductDto>]
-      def call(id, attributes)
+      def call(id:, attributes:)
         recipe = @recipe_repository.update(id, attributes)
         products = @product_repository.find_by_ids(recipe.ingredients.map(&:product_id))
 
