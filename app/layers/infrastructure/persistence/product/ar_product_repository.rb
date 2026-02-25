@@ -17,7 +17,7 @@ module Infrastructure
             build_domain_product_from_ar(product)
           end
         end
-        
+
         # Finds a product by its ID.
         #
         # @param id [Integer] the product ID
@@ -65,7 +65,7 @@ module Infrastructure
         #
         # @param id [Integer] the product ID
         # @param attributes [Hash] the attributes to update (name, unit, density)
-        # @return [Domains::Product::Product] the updated domain product instance        
+        # @return [Domains::Product::Product] the updated domain product instance
         def update(id, attributes)
           if attributes.key?(:unit)
             raise Domains::Product::InvalidProductError, "Unit cannot be updated for a product."
@@ -99,7 +99,7 @@ module Infrastructure
 
           domain_product = build_domain_product_from_ar(ar_product)
           ar_product.destroy!
-          
+
           domain_product
         end
       end

@@ -40,7 +40,7 @@ module Domains
       # @return [Boolean] true if the objects are equal based on equality attributes
       def ==(other)
         return false unless other.is_a?(self.class)
-        
+
         # use defined equality attributes or all instance variables if none defined
         attrs_to_compare = self.class._equality_attributes || instance_variables
         attrs_to_compare.all? do |var|
@@ -55,7 +55,7 @@ module Domains
       def hash
         attrs_to_compare = self.class._equality_attributes || instance_variables
         values = attrs_to_compare.map { |var| instance_variable_get(var) }
-        [self.class, *values].hash
+        [ self.class, *values ].hash
       end
     end
   end

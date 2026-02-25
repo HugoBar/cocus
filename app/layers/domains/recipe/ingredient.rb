@@ -1,6 +1,6 @@
 module Domains
   module Recipe
-    require_relative 'errors'
+    require_relative "errors"
 
     # Represents a single ingredient in a recipe.
     #
@@ -36,7 +36,7 @@ module Domains
         @product_id = product_id
         @quantity = Quantity.new(amount:, unit:)
         @position = position.to_i if position
-        
+
         validate! # ensure the ingredient is valid
         freeze    # immutability for VO
       end
@@ -48,7 +48,7 @@ module Domains
       # @raise [InvalidIngredientError] if any validation fails
       def validate!
         # Validate product_id presence and positivity
-        raise InvalidIngredientError, "product_id is required" if product_id <= 0        
+        raise InvalidIngredientError, "product_id is required" if product_id <= 0
         # Validate position positivity if present
         raise InvalidIngredientError, "position must be positive if present" if !position.nil? && position.to_i <= 0
       end

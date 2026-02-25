@@ -1,5 +1,5 @@
 module Application
-  module Product 
+  module Product
     # Service object for deleting a product.
     #
     # It coordinates domain repositories but does not contain

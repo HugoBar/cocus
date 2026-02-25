@@ -4,7 +4,7 @@ module Domains
       def all
         raise NotImplementedError
       end
-      
+
       def find(id)
         raise NotImplementedError
       end

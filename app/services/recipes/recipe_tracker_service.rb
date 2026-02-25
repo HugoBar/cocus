@@ -11,7 +11,7 @@ module Recipes
         recipe.ingredients = recipe.recipe_products
         recipe.missing_ingredients = missing_ingredients_for(recipe, available)
         recipe.available = available
-          
+
         recipe
       end
     end
@@ -29,7 +29,7 @@ module Recipes
     private
 
     def filtered_recipes(recipes)
-      recipes.select { |recipe| can_be_made?(recipe)}
+      recipes.select { |recipe| can_be_made?(recipe) }
     end
 
     def can_be_made?(recipe)

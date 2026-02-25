@@ -1,13 +1,12 @@
 module Application
   module Recipe
     module Dto
-
       # Data Transfer Object representing a recipe ingredient as exposed
       # by the application layer.
       #
-      # This DTO is a lightweight, serialization‑friendly representation 
-      # of the domain Ingredient value object. Its sole purpose is to 
-      # transport data from the domain layer to the interface layer 
+      # This DTO is a lightweight, serialization‑friendly representation
+      # of the domain Ingredient value object. Its sole purpose is to
+      # transport data from the domain layer to the interface layer
       # (e.g., serializers, API responses).
       #
       # Example usage:
@@ -51,7 +50,6 @@ module Application
           )
         end
       end
-
     end
   end
 end

@@ -15,7 +15,7 @@ module Infrastructure
             prep_time: recipe.prep_time
           )
         end
-        
+
         # Builds a domain recipe entity from provided attributes.
         def build_domain_recipe(id:, name:, description:, ingredients:, steps:, servings:, prep_time:)
           Domains::Recipe::Recipe.new(
@@ -77,7 +77,7 @@ module Infrastructure
             end
           end
           unless errors.empty?
-            raise Domains::Recipe::InvalidQuantityError, errors.join('; ')
+            raise Domains::Recipe::InvalidQuantityError, errors.join("; ")
           end
           products
         end

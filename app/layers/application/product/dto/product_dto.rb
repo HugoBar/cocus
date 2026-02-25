@@ -1,7 +1,6 @@
 module Application
   module Product
     module Dto
-
       # Data Transfer Object representing a product as exposed by the
       # application layer.
       #
@@ -49,7 +48,6 @@ module Application
           )
         end
       end
-
     end
   end
 end

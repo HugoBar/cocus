@@ -1,10 +1,10 @@
 module Domains
   module Product
-    require_relative 'errors'
+    require_relative "errors"
 
-    MASS_UNITS = [:kg, :g].freeze
-    BASE_UNITS = [:count, :ml, :g].freeze
-    
+    MASS_UNITS = [ :kg, :g ].freeze
+    BASE_UNITS = [ :count, :ml, :g ].freeze
+
     # Represents a product that can be used in recipes.
     #
     # A Product defines the base measurement unit used for the item,
@@ -21,7 +21,6 @@ module Domains
     #     density: 0.59
     #   )
     class Product
-
       attr_reader :id, :name, :unit, :density
 
       # Initializes a new Product object.

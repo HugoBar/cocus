@@ -16,7 +16,7 @@ module Storages
 
     def self.serialize_collection(storages)
       {
-        collection: 
+        collection:
           storages.map do |storage|
             new(storage).as_json
           end

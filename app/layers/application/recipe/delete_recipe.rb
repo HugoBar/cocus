@@ -1,9 +1,9 @@
 module Application
   module Recipe
-      # Application use case responsible for deleting a recipe.
-      #
-      # It coordinates domain repositories but does not contain
-      # business rules itself.
+    # Application use case responsible for deleting a recipe.
+    #
+    # It coordinates domain repositories but does not contain
+    # business rules itself.
     class DeleteRecipe
       # Initializes the use case with required dependencies.
       #

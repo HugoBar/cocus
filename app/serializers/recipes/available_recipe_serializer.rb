@@ -1,6 +1,5 @@
 module Recipes
   class AvailableRecipeSerializer
-
     def initialize(recipe)
       @recipe = recipe
     end

@@ -1,7 +1,7 @@
 module Domains
   module Recipe
-    require_relative 'errors'
-    require 'bigdecimal'
+    require_relative "errors"
+    require "bigdecimal"
 
     MAPPED_MEASURE_UNITS = {
       ml: :ml,
@@ -13,13 +13,13 @@ module Domains
       g: :g,
       kg: :g
     }
-    
+
     # Represents a quantity for an ingredient, combining an amount and a unit.
     #
     # Quantity is a Value Object (VO), meaning it is immutable and represents
     # an atomic piece of data in a recipe.
     #
-    # Each quantity has an amount (as BigDecimal) and a unit (as a symbol). 
+    # Each quantity has an amount (as BigDecimal) and a unit (as a symbol).
     # It is used in the Ingredient VO.
     #
     # Example usage:

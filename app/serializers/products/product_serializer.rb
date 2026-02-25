@@ -15,11 +15,11 @@ module Products
 
     def self.serialize_collection(products)
       {
-        collection: 
+        collection:
           products.map do |product|
             new(product).as_json
           end
-        
+
       }
     end
   end

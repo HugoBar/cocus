@@ -1,5 +1,5 @@
-require_relative '../layers/domains/recipe/errors'
-require_relative '../layers/domains/product/errors'
+require_relative "../layers/domains/recipe/errors"
+require_relative "../layers/domains/product/errors"
 
 class ApplicationController < ActionController::API
   include ParamValidations

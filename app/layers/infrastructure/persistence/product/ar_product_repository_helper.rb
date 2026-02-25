@@ -11,7 +11,7 @@ module Infrastructure
             density: product.density
           )
         end
-        
+
         # Builds a domain product entity from provided attributes.
         def build_domain_product(id:, name:, unit:, density:)
           Domains::Product::Product.new(

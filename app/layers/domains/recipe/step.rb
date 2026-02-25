@@ -1,6 +1,6 @@
 module Domains
   module Recipe
-    require_relative 'errors'
+    require_relative "errors"
 
     # Represents a single step in a recipe.
     #

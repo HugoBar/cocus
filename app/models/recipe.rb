@@ -8,5 +8,4 @@ class Recipe < ApplicationRecord
   accepts_nested_attributes_for :recipe_products, allow_destroy: true
 
   attr_accessor :ingredients, :available, :missing_ingredients
-  
 end

@@ -1,7 +1,6 @@
 module Application
   module Recipe
     module Dto
-
       # Data Transfer Object representing a recipe as exposed by the
       # application layer.
       #
@@ -59,7 +58,6 @@ module Application
           )
         end
       end
-
     end
   end
 end

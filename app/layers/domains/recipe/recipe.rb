@@ -1,6 +1,6 @@
 module Domains
   module Recipe
-    require_relative 'errors'
+    require_relative "errors"
 
     # Represents a cooking recipe with its name, description, ingredients, steps,
     # number of servings, and preparation time.
@@ -14,7 +14,7 @@ module Domains
     #     4,
     #     15.0
     #   )
-    class Recipe 
+    class Recipe
       attr_reader :id, :name, :description, :ingredients, :steps, :servings, :prep_time
 
       # Initializes a new Recipe object.
@@ -29,15 +29,15 @@ module Domains
         @id = id
         @name = name
         @description = description
-        @ingredients = ingredients.map { |i| Ingredient.new(**i) } 
+        @ingredients = ingredients.map { |i| Ingredient.new(**i) }
         @steps = steps.map { |s| Step.new(**s) }
         @servings = servings.to_i
         @prep_time = prep_time.to_f
 
         validate! # ensure the recipe is valid
-      end 
+      end
 
-      private 
+      private
 
       # Validates the recipe's attributes
       #

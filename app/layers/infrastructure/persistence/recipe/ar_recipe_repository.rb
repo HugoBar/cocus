@@ -120,10 +120,10 @@ module Infrastructure
               end
             end
           end
-          
+
           build_domain_recipe_from_ar(ar_recipe)
         end
-        
+
         # Deletes a recipe by its ID.
         #
         # @param id [Integer] The ID of the recipe to delete.
