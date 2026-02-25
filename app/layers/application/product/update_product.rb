@@ -15,9 +15,11 @@ module Application
       #
       # @param id [Integer] the ID of the product to update
       # @param attributes [Hash] the attributes to update (name, unit, density)
-      # @return [Domains::Product::Product] the updated domain product instance
+      # @return [Application::Product::Dto::ProductDto] the updated product as a DTO
       def call(id:, attributes:)
-        @product_repository.update(id, attributes)
+        product = @product_repository.update(id, attributes)
+
+        Dto::ProductDto.from_domain(product)
       end
     end
   end

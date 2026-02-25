@@ -14,10 +14,12 @@ module Application
       # Executes the service to create a new product.
       #
       # @param attributes [Hash] the attributes for the new product (name, unit, density)
-      # @return [Domains::Product::Product] the created domain product instance
+      # @return [Application::Product::Dto::ProductDto] the created product as a DTO
       # @raise ActiveRecord::RecordInvalid if validation fails in the repository layer.
       def call(attributes)
-        @product_repository.create(attributes)
+        product = @product_repository.create(attributes)
+
+        Dto::ProductDto.from_domain(product)
       end
     end
   end

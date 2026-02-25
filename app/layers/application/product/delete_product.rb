@@ -12,8 +12,11 @@ module Application
       # Deletes a product by its ID.
       #
       # @param id [Integer] the ID of the product to delete
+      # @return [Application::Product::Dto::ProductDto] the deleted product as a DTO
       def call(id)
-        @product_repository.delete(id)
+        product = @product_repository.delete(id)
+
+        Dto::ProductDto.from_domain(product)
       end
     end
   end
